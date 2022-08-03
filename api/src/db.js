@@ -58,10 +58,19 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-// const {} = sequelize.models;
+const { Category, Register, Transfer, User } = sequelize.models;
+
+Register.belongsTo(User);
+User.hasMany(Register);
+
+Transfer.belongsTo(Register);
+Register.hasMany(Transfer);
+
+Transfer.belongsTo(Category);
+Category.hasMany(Transfer);
 
 module.exports = {
-  // ...sequelize.models,
+  ...sequelize.models,
   conn: sequelize,
   Op,
 };
