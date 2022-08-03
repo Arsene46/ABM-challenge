@@ -100,6 +100,15 @@ const transfers = [
     register: "main",
     category: "electricity",
   },
+  {
+    concept: "reciving money",
+    day: new Date("2022/08/23"),
+    // time: "15:53",
+    amount: 10000,
+    type: "gain",
+    register: "main",
+    category: "salary",
+  },
 ];
 
 const preloadTransfer = async () => {
@@ -107,11 +116,11 @@ const preloadTransfer = async () => {
     await Promise.all(
       transfers.map(async (e) => {
         const newTransfer = await Transfer.findOrCreate({
-          where: { concept: e.concept, day: e.day, time: e.time },
+          where: { concept: e.concept, day: e.day },
           defaults: {
             concept: e.concept,
             day: e.day,
-            time: e.time,
+            time: e.time ? e.time : null,
             amount: e.amount,
             type: e.type,
           },
