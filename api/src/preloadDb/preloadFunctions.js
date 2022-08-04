@@ -94,7 +94,7 @@ const transfers = [
   {
     concept: "paying a bill",
     day: new Date("2022/08/22"),
-    time: "15:33",
+    time: "9:33",
     amount: 10000,
     type: "loss",
     register: "main",
@@ -102,8 +102,8 @@ const transfers = [
   },
   {
     concept: "reciving money",
-    day: new Date("2022/08/23"),
-    // time: "15:53",
+    day: new Date("2022/08/22"),
+    time: "15:53",
     amount: 10000,
     type: "gain",
     register: "main",
