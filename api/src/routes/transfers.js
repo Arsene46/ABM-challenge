@@ -91,11 +91,44 @@ router.post("/:registerId", async (req, res, next) => {
     if (type !== "gain" && type !== "loss")
       errors.push(`${type} is not in a valid type, valid = 'gain' or 'loss'`);
     if (errors.length !== 0) return res.status(400).json({ msg: errors });
+
     /////////////////////////////////////////////////
     const email = "arseneblavier46@gmail.com";
     const user = await User.findOne({ where: { email } });
     /////////////////////////////////////////////////
-    const register = await Register.findByPk(parseInt(registerId), {
+
+    let register = await Register.findByPk(parseInt(registerId), {
+      where: { userId: user.id },
+    });
+    if (!register)
+      return res.status(404).json({ msg: "No corresponding register found!" });
+
+    let transferCaregory =
+      (await Category.findOne({
+        where: {
+          name: category.toLowerCase(),
+          type: { [Op.or]: [type, "both"] },
+        },
+      })) ||
+      (await Category.findOne({
+        where: { name: "other" },
+      }));
+
+    const newTransfer = await Transfer.create({
+      concept,
+      day: new Date(day),
+      time,
+      amount,
+      type,
+    });
+
+    await register.addTransfer(newTransfer);
+    await transferCaregory.addTransfer(newTransfer);
+    await Register.update(
+      { amount: register.amount + (type === "loss" ? -amount : amount) },
+      { where: { id: registerId } }
+    );
+    register = await Register.findByPk(parseInt(registerId), {
       where: { userId: user.id },
     });
     return res.status(201).json(register);
